@@ -1,0 +1,45 @@
+{
+  "browser": true,  // allow common browser globals
+
+  "predef": [       // extra globals to ignore
+
+    // require.js
+    "require",
+    "define",
+
+    // sinon
+    "sinon",
+
+    // qunit
+    "QUnit",
+    "equal",
+    "asyncTest",
+    "test",
+    "start",
+    "stop",
+    "raises",
+    "same",
+    "module",
+    "expect",
+    "notEqual",
+    "ok",
+    "deepEqual",
+
+    // HTML5 browser APIs that jshint will learn about someday
+    "requestAnimationFrame",
+    "BlobBuilder",
+
+    // misc
+    "CubicVR"
+  ],
+
+  // want to toggle these and eliminate the bugs they catch, one by one
+  "devel": true,     // we probably don't want console calls in production
+  "undef": true,     // catch bug-causing typos!
+  "shadow": false,   // shadowing variable names are sources of confusion
+  "noarg": false,    // don't want to inadvertently fall out of optimizer
+  "forin": false,    // require hasInProperty in for..in
+  "newcap": false,   // require constructors to be Capitalized
+  "esnext": false,    // we're not in a world where can count on let/const
+  "sub": true        //  want to be able to use the someobject["someproperty"] syntax
+}

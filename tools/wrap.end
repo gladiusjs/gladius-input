@@ -1,0 +1,7 @@
+
+  var extension = require( "../src/gladius-input" );
+
+  return extension;
+  
+}));
+
