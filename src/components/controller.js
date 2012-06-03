@@ -21,7 +21,8 @@ define( function( require ) {
     var inputs;
     var that = this;
     var types = [ "actions", "states" ];
-    for( var type in types ) {
+    for( var t = 0; t < types.length; ++ t ) {
+      var type = types[t];
       if( this._inputMap.hasOwnProperty( type ) ) {
         this._inputStates[type] = {};
         var names = Object.keys( this._inputMap[type] );
