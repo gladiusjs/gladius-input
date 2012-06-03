@@ -1,3 +1,6 @@
 {
-  "name": "gladius-input"
+  "name": "gladius-input",
+  "volo": {
+    "url": "https://github.com/downloads/gladiusjs/gladius-core/gladius-input-{version}.js"
+  }
 }
