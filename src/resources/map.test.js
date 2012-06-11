@@ -107,6 +107,23 @@ define(
         deepEqual(newMap, expected, "map return has correct dicts");
       });
       
+      test( "constructing a map with non-string property values throws", 
+        function () {
+          expect(1);
+          
+          var mapArg = {
+            "Actions": {
+              "First": [],
+            }
+          };
+          
+          raises(function() {
+            var newMap = new Map(mapArg);
+          }, function(err) {
+            return err instanceof Error &&
+              err.message == "map initializer contained non-string value"},
+            "exception raised by map creation with non-string prop val");
+        }); 
     };
   }
 );
