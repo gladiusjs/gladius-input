@@ -1,6 +1,8 @@
 define(
   [ "src/components/controller",
-    "src/resources/map" ],
+    "src/resources/map",
+    "core/event"
+     ],
   function( Controller, Map ) {
     return function() {
 
@@ -59,6 +61,23 @@ define(
           }
         );
         var controller = new Controller( map );
+        
+        // create fake entity API object
+        var myEntityAPI = { handleEvent: function () {} };
+        
+        // create entity mock
+        var entityMock = sinon.mock(myEntityAPI);
+
+        // tell controller where to dispatch events
+        controller.setOwner(entityMock);
+        
+        // set up mock to expect handleEvent called with dispatched event
+        mock.expects("handleEvent").once().withArgs(new Event(XXX));
+        
+        // call controller.onKey(XXX)
+       
+        // ensure expectations
+
       });
 
     };
