@@ -1,61 +1,112 @@
 define(
-    [ "src/resources/map" ],
-    function( Map ) {
-      return function() {
+  [ "src/resources/map" ],
+  function( Map ) {
+    return function() {
 
-        module( "Map", {
-          setup: function() {
+      module( "Map", {
+        setup: function() {
+        },
+        teardown: function() {}
+      });
+      
+      test( "construct empty map", function() {
+        expect( 4 );
+
+        var expected = {
+          "States": {
           },
-          teardown: function() {}
-        });
+          "Actions": {
+          }
+        };
         
-        test( "construct empty map", function() {
-          expect( 4 );
-
-          var expected = {
-            "States": {
-            },
-            "Actions": {
-            }
-          };
-          
-          var newMap = new Map();
-          ok(newMap instanceof Map, "type is correct when no args passed");
-          deepEqual(newMap, expected, "map return has correct empty dicts");
-          
-          newMap = new Map({});
-          ok(newMap instanceof Map, "type is correct when no args passed");
-          deepEqual(newMap, expected, "map return has correct empty dicts");
-
-        });  
+        var newMap = new Map();
+        ok(newMap instanceof Map, "type is correct when no args passed");
+        deepEqual(newMap, expected, "map return has correct empty dicts");
         
-        test( "construct meaningful states-only map", function() {
-          expect( 2 );
+        newMap = new Map({});
+        ok(newMap instanceof Map, "type is correct when no args passed");
+        deepEqual(newMap, expected, "map return has correct empty dicts");
 
-          var arg = {
-            "States": {
-              "RunModifier": "SHIFT",
-              "WalkForward": "W"
-            }
-          };
-          
-          var expected = {
-            "States": {
-              "RunModifier": "SHIFT",
-              "WalkForward": "W"
-            },
-            "Actions": {
-            }
-          };
-          
-          var newMap = new Map(arg);
-          ok(newMap instanceof Map, "type is correct when arg passed");
-          deepEqual(newMap, expected, "map return has correct dicts");
-        });          
+      });  
+      
+      test( "construct meaningful states-only map", function() {
+        expect( 2 );
 
-        // XXX construct meaningful actions-only map
+        var arg = {
+          "States": {
+            "RunModifier": "SHIFT",
+            "WalkForward": "W"
+          }
+        };
         
-        // XXX construct states & actions map
-      };
-    }
+        var expected = {
+          "States": {
+            "RunModifier": "SHIFT",
+            "WalkForward": "W"
+          },
+          "Actions": {
+          }
+        };
+        
+        var newMap = new Map(arg);
+        ok(newMap instanceof Map, "type is correct when arg passed");
+        deepEqual(newMap, expected, "map return has correct dicts");
+      });          
+
+      test( "construct meaningful actions-only map", function() {
+        expect( 2 );
+
+        var arg = {
+          "Actions": {
+            "Fire": "SPACE",
+            "Help": "F1"
+          }
+        };
+        
+        var expected = {
+          "States": {
+          },
+          "Actions": {
+            "Fire": "SPACE",
+            "Help": "F1"
+          }
+        };
+        
+        var newMap = new Map(arg);
+        ok(newMap instanceof Map, "type is correct when arg passed");
+        deepEqual(newMap, expected, "map return has correct dicts");
+      });          
+
+      test( "construct meaningful map, states and actions", function() {
+        expect( 2 );
+
+        var arg = {
+          "Actions": {
+            "Fire": "SPACE",
+            "Help": "F1"
+          },
+          "States": {
+            "RunModifier": "SHIFT",
+            "WalkForward": "W"
+          }
+        };
+        
+        var expected = {
+          "States": {
+            "RunModifier": "SHIFT",
+            "WalkForward": "W"
+          },
+          "Actions": {
+            "Fire": "SPACE",
+            "Help": "F1"
+          }
+        };
+        
+        var newMap = new Map(arg);
+        ok(newMap instanceof Map, "type is correct when arg passed");
+        deepEqual(newMap, expected, "map return has correct dicts");
+      });
+      
+    };
+  }
 );

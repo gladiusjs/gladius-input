@@ -5,7 +5,8 @@ if ( typeof define !== "function" ) {
 define( function( require ) {
 
   return [
-    "src/resources/map.test"
+    "src/resources/map.test",
+    "src/components/controller.test"
           ];
 
 });
