@@ -51,7 +51,7 @@ define(
 
 
       test( "key event triggers game action, based on map", function() {
-        expect( 0 );
+        expect( 2 );
 
         var map = new Map(
           {
@@ -63,7 +63,11 @@ define(
         var controller = new Controller( map );
         
         // create fake entity API object
-        var myEntityAPI = { handleEvent: function () {} };
+        var myEntityAPI = { 
+          handleEvent: function ( event ) {
+            deepEqual( event, new Event( "Fire" ), "event dispatched to entity" );
+          }
+        };
         
         // create entity mock
         var entityMock = sinon.mock(myEntityAPI);
@@ -72,12 +76,62 @@ define(
         controller.setOwner(entityMock);
         
         // set up mock to expect handleEvent called with dispatched event
-        mock.expects("handleEvent").once().withArgs(new Event(XXX));
+        mock.expects("handleEvent").once();
         
-        // call controller.onKey(XXX)
+        ok( controller.hasOwnProperty( "onKeyDown" ), "has key event handler" );
+        controller.onKeyDown( new Event( "KeyDown", "SPACE" ) );
        
         // ensure expectations
+        ok( entityMock.verify(), "entity method invocations are correct" );
+      });
 
+      test( "key event triggers game state, based on map", function() {
+        expect( 10 );
+
+        var map = new Map(
+          {
+            "States": {
+              "WalkForward": "W"
+            }
+          }
+        );
+        var controller = new Controller( map );
+        ok( controller.hasOwnProperty( "onKeyDown" ), 
+          "controller has KeyDown event handler" );
+        ok( controller.hasOwnProperty( "onKeyUp" ), 
+          "controller has KeyUp event handler" );
+
+        var eventCounter = 0;
+
+        // create fake entity API object
+        var myEntityAPI = { 
+          handleEvent: function ( event ) {
+            ++ eventCounter;
+            equal( event.type, "WalkForward", "event type is correct" );
+
+            if( 1 === eventCounter ) {
+              equal( event.data, true, 
+                "WalkForward state is true after KeyDown" );
+              equal( controller.states["WalkForward"], true, 
+                "controller WalkForward state is correct after KeyUp" );
+            } else {
+              equal( event.data, false, 
+                "WalkForward state is false after KeyUp" );
+              equal( controller.states["WalkForward"], false, 
+                "controller WalkForward state is false after KeyUp" );
+            }
+          }
+        };
+               
+        equal( controller.states["WalkForward"], false, 
+          "controller WalkForward state is initially false" );
+
+        // call controller.onKey()
+        controller.onKeyDown( new Event( "KeyDown", "W" ) );
+        controller.onKeyUp( new Event( "KeyUp", "W" ) );
+       
+        // ensure expectations
+        equal( eventCounter, 2, "handleEvent invoked twice" );
       });
 
     };
