@@ -3,7 +3,7 @@ define(
     "src/resources/map",
     "core/event"
      ],
-  function( Controller, Map ) {
+  function( Controller, Map, Event ) {
     return function() {
 
       module( "Controller", {
@@ -76,7 +76,7 @@ define(
         controller.setOwner(entityMock);
         
         // set up mock to expect handleEvent called with dispatched event
-        mock.expects("handleEvent").once();
+        entityMock.expects("handleEvent").once();
         
         ok( controller.hasOwnProperty( "onKeyDown" ), "has key event handler" );
         controller.onKeyDown( new Event( "KeyDown", "SPACE" ) );

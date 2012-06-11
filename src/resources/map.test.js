@@ -113,7 +113,7 @@ define(
           
           var mapArg = {
             "Actions": {
-              "First": [],
+              "First": []
             }
           };
           
@@ -121,8 +121,8 @@ define(
             var newMap = new Map(mapArg);
           }, function(err) {
             return err instanceof Error &&
-              err.message == "map initializer contained non-string value"},
-            "exception raised by map creation with non-string prop val");
+              err.message == "map initializer contained non-string value";
+          },"exception raised by map creation with non-string prop val");
         }); 
     };
   }
