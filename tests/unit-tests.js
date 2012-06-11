@@ -5,9 +5,7 @@ if ( typeof define !== "function" ) {
 define( function( require ) {
 
   return [
-
-    "src/services/keyboard/key-codes.test"
-    
+    "src/resources/map.test"
           ];
 
 });
