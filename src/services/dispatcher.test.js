@@ -207,20 +207,48 @@ define(
           "default element is document when element option is missing" );
       });
 
-      asyncTest( "keyboard events are buffered by dipatcher", function() {
+      asyncTest( "keyboard events are buffered by dispatcher", function() {
         expect( 0 );
 
+        function makeMockKeyEvent( type, which, keyCode ) {
+          return {'type': type, 'which': which, 'keyCode': keyCode};
+        }
+        
+        // generate the events        
         var i;
         var keyboardEvents = [];
+        var expectedNames = [];
         for( i = 0; i < keyCodes.length; ++ i ) {
           var pair = keyCodes[i];
           var name = pair[0];
           var code = pair[1];
+
+          keyboardEvents.push(makeMockKeyEvent(code, null));
+          expectedNames.push(name);
+          keyboardEvents.push(makeMockKeyEvent(null, code));
+          expectedNames.push(name);
         }
 
-        // 1. generate keyboard events for all keys we wish to test
+        var fakeElement = {
+          handlerList: {},
+           
+          addEventListener: function( type, handler, preventDefault ) {
+             this.handlerList[type] = handler;
+          },
+
+          dispatchEvent: function( e ) {
+             this.handlerList[e.type](e);        
+          }
+            
+        };
+        
+        for ( i = 0; i < keyboardEvents.length; ++ i) {
+          
+        }
+        
         // 2. for each event, dispatch it and verify that it is buffered
         // 3. verify that KeyDown and KeyUp events are dispatched to a mock controller
+        
       });
       
     };
