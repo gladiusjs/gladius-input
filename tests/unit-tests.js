@@ -5,6 +5,7 @@ if ( typeof define !== "function" ) {
 define( function( require ) {
 
   return [
+    "src/common/create-keyboard-event.test",
     "src/resources/map.test",
     "src/components/controller.test",
     "src/services/dispatcher.test"

@@ -19,19 +19,33 @@ define(
         var dispatcher = new Dispatcher(mockScheduler, 
           {element: this.testCanvas});
         ok(dispatcher instanceof Dispatcher, "dispatcher is the right instance");
-        mockScheduler.verify();
+        ok( mockScheduler.verify(), "service tasks are scheduled" );
+      });
+
+      test( "construct a dispatcher without a DOM element", function() {
+        expect( 2 );
+
+        var dispatcher;
+
+        dispatcher = new Dispatcher( null, null );
+        equal( dispatcher.element, document, 
+          "default element is document when options are missing" );
+
+        dispatcher = new Dispatcher( null, {} );
+        equal( dispatcher.element, document, 
+          "defualt element is document when element option is missing" );
+      });
+
+      test( "keyboard events are buffered by dipatcher", function() {
+        expect( 0 );
       });
       
-    // constructing dispatcher without DOM element throws
-        
     // events dispatched directly to DOM element associated with service
     // received by dispatcher 
     
     // test the events are buffered by Dispatcher (test ALL key events)
     
     // test that buffered events are re-dispatched during run cycle
-    
-    // test that scheduler passed to the dispatcher is actually used
     };
   }
 );
