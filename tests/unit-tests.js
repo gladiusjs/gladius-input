@@ -6,7 +6,8 @@ define( function( require ) {
 
   return [
     "src/resources/map.test",
-    "src/components/controller.test"
+    "src/components/controller.test",
+    "src/services/dispatcher.test"
           ];
 
 });
