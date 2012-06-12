@@ -40,7 +40,6 @@ define(
         // Webkit synthetic: fail, Firefox: pass
         equal( e.keyCode, 65, "keyCode property set");
         equal( e.charCode, 0, "charCode property set");
-
       });
 
     };
