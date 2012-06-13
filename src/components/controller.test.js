@@ -87,6 +87,51 @@ define(
         ok( entityMock.verify(), "entity method invocations are correct" );
       });
 
+      test( "key event triggers multiple mapped game actions, based on map", function() {
+        expect( 3 );
+
+        var map = new Map(
+          {
+            "Actions": {
+              "Fire": "SPACE",
+              "Fly": "SPACE"
+            }
+          }
+        );
+        var controller = new Controller( map );
+
+        var fireCounter = 0;
+        var flyCounter = 0;
+        // create fake entity API object
+        var fakeEntity = {
+          //Code in here doesn't actually get run. Whoops.
+          handleEvent: function ( event ) {
+            if (event.type === "Fire"){
+              if (fireCounter === 0){
+                ok(true, "fire event dispatched to entity once and once only");
+                ++ fireCounter;
+              }else{
+                ok(false, "fire event dispatched to entity once and once only");
+              }
+            }else if (event.type === "Fly"){
+              if (flyCounter === 0){
+                ok(true, "fly event dispatched to entity once and once only");
+                ++ flyCounter;
+              }else{
+                ok(false, "fly event dispatched to entity once and once only");
+              }
+            }else{
+              ok(false, "valid type dispatched to entity");
+            }
+          }
+        };
+
+        // tell controller where to dispatch events
+        controller.setOwner(fakeEntity);
+        ok( "onKeyDown" in controller, "has key event handler" );
+        controller.onKeyDown( new Event( "KeyDown", "SPACE" ));
+      });
+
       test( "key event triggers game state, based on map", function() {
         expect( 10 );
 
@@ -115,7 +160,7 @@ define(
               equal( event.data, true, 
                 "WalkForward state is true after KeyDown" );
               equal( controller.states["WalkForward"], true, 
-                "controller WalkForward state is correct after KeyUp" );
+                "controller WalkForward state is correct after KeyDown" );
             } else {
               equal( event.data, false, 
                 "WalkForward state is false after KeyUp" );
@@ -136,6 +181,83 @@ define(
        
         // ensure expectations
         equal( eventCounter, 2, "handleEvent invoked twice" );
+      });
+
+      test( "key event triggers multiple mapped game states, based on map", function() {
+        expect( 18 );
+
+        var map = new Map(
+          {
+            "States": {
+              "WalkForward": "W",
+              "Pain": "W"
+            }
+          }
+        );
+        var controller = new Controller( map );
+        ok( "onKeyDown" in controller,
+          "controller has KeyDown event handler" );
+        ok( "onKeyUp" in controller,
+          "controller has KeyUp event handler" );
+
+        var walkEventCounter = 0;
+        var painEventCounter = 0;
+
+        // create fake entity API object
+        var fakeEntity = {
+          handleEvent: function ( event ) {
+            if (event.type === "WalkForward"){
+              ++ walkEventCounter;
+              if( 1 === walkEventCounter ) {
+                equal( event.data, true,
+                  "WalkForward state is true after KeyDown" );
+                equal( controller.states["WalkForward"], true,
+                  "controller WalkForward state is correct after KeyDown" );
+                equal( controller.states["Pain"], true,
+                  "controller Pain state is correct after KeyDown");
+              } else {
+                equal( event.data, false,
+                  "WalkForward state is false after KeyUp" );
+                equal( controller.states["WalkForward"], false,
+                  "controller WalkForward state is false after KeyUp" );
+                equal( controller.states["Pain"], false,
+                  "controller Pain state is correct after KeyDown");
+              }
+            }else if (event.type === "Pain"){
+              ++ painEventCounter;
+              if( 1 === painEventCounter ) {
+                equal( event.data, true,
+                  "pain state is true after KeyDown" );
+                equal( controller.states["WalkForward"], true,
+                  "controller WalkForward state is correct after KeyDown" );
+                equal( controller.states["Pain"], true,
+                  "controller Pain state is correct after KeyDown");
+              } else {
+                equal( event.data, false,
+                  "pain state is false after KeyUp" );
+                equal( controller.states["WalkForward"], false,
+                  "controller WalkForward state is false after KeyUp" );
+                equal( controller.states["Pain"], false,
+                  "controller Pain state is correct after KeyDown");
+              }
+            }
+          }
+        };
+
+        controller.setOwner(fakeEntity);
+
+        equal( controller.states["WalkForward"], false,
+          "controller WalkForward state is initially false" );
+        equal( controller.states["Pain"], false,
+          "controller Pain state is initially false" );
+
+        // call controller.onKey()
+        controller.onKeyDown( new Event( "KeyDown", "W" ) );
+        controller.onKeyUp( new Event( "KeyUp", "W" ) );
+
+        // ensure expectations
+        equal( walkEventCounter, 2, "walk handleEvent invoked twice" );
+        equal( painEventCounter, 2, "pain handleEvent invoked twice" );
       });
 
     };

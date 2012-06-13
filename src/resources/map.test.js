@@ -114,7 +114,7 @@ define(
       
       test( "constructing a map with non-string/non-array property values throws", 
         function () {
-          expect(1);
+          expect(2);
           
           var mapArg = {
             "Actions": {
@@ -124,10 +124,27 @@ define(
           
           raises(function() {
             var newMap = new Map(mapArg);
-          }, function(err) {
+          },
+            function(err) {
             return err instanceof Error &&
-              err.message == "map initializer contained non-string value";
-          }, "exception raised by map creation with non-string prop val");
+              err.message == "map contains action First that is not a string or array";
+          },
+            "exception raised by map creation with non-string prop val");
+
+          mapArg = {
+            "States": {
+              "First": {}
+            }
+          };
+
+          raises(function() {
+              var newMap = new Map(mapArg);
+            },
+            function(err) {
+              return err instanceof Error &&
+                err.message == "map contains state First that is not a string or array";
+            },
+            "exception raised by map creation with non-string prop val");
         }); 
     };
   }

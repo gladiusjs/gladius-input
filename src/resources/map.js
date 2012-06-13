@@ -11,13 +11,33 @@ define( function ( require ) {
   };
   Map.prototype = {
     _validate: function _mapValidate() {
-      var actionLength = this.Actions.length;
-      for ( var i=0; i < actionLength; ++ i ) {
-        if ( (!(typeof this.Actions[i]) == String) &&
-             (!(typeof this.Actions[i]) == Array)) {
-               throw new Error("map contains action " + i +
-                 "that is neither String nor Array");
-             } 
+
+      //This could probably have its length cut in half by making a function that gets called from in here.
+      this._validateSubmap(this.Actions, "action");
+      this._validateSubmap(this.States, "state");
+    },
+    _validateSubmap: function _validateSubmap(submap, submapName){
+      var submapLength, submapIndex;
+      var submapKeys = Object.keys(submap);
+      for ( submapIndex = 0, submapLength = submapKeys.length; submapIndex < submapLength; ++ submapIndex ) {
+        if (!(typeof submap[submapKeys[submapIndex]] == "string")){
+          if ( !Array.isArray(submap[submapKeys[submapIndex]])) {
+            throw new Error("map contains " + submapName + " " + submapKeys[submapIndex] +
+              " that is not a string or array");
+          }else{
+            var i, l;
+            var submapArray = submap[submapKeys[submapIndex]];
+            if (submapArray.length === 0){
+              throw new Error("map contains a(n) " + submapName + " array called " + submapKeys[submapIndex] + " of length 0");
+            }
+            for (i = 0, l = submapArray.length; i < l; ++ i){
+              if (typeof submapArray[i] !== "string"){
+                throw new Error("map contains " + submapName + " " + submapArray[i] +
+                  " in a(n) " + submapName + " array. That " + submapName + " is not a string and the map is invalid as a result");
+              }
+            }
+          }
+        }
       }
     }
   }

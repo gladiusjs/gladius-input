@@ -14,9 +14,6 @@ define( function ( require ) {
     var stateIndex, stateLength, keyIndex, keyLength;
     var actionIndex, actionLength;
 
-    //TODO: add comments explaining, make this work for the case where a key triggers more than one action
-    //and make a test to make sure that a key bound to more than one thing works properly
-
     this.map = (undefined !== map ) ? map: new Map();
     this.states = {};
     this._stateMapping = {};
@@ -26,34 +23,47 @@ define( function ( require ) {
     var states = Object.keys(this.map.States);
     for (stateIndex = 0, stateLength = states.length; stateIndex < stateLength; ++ stateIndex){
       var keys = this.map.States[states[stateIndex]];
+      //The current state will have either one key or an array of keys mapped to it
       if (Array.isArray(keys)){
         for ( keyIndex = 0, keyLength = keys.length; keyIndex < keyLength; ++ keyIndex){
-          this._stateMapping[keys[keyIndex]] = states[stateIndex];
+          this._mapKey(this._stateMapping, keys[keyIndex], states[stateIndex]);
         }
       }else{
-        this._stateMapping[keys] = states[stateIndex];
+        this._mapKey(this._stateMapping, keys, states[stateIndex]);
       }
       this.states[states[stateIndex]] = false;
     }
 
     this._actionMapping = {};
-    //See above comment but for actions
+    //See above comments but for actions
     var actions = Object.keys(this.map.Actions);
     for (actionIndex = 0, actionLength = actions.length; actionIndex < actionLength; ++ actionIndex){
       var keys = this.map.Actions[actions[actionIndex]];
       if (Array.isArray(keys)){
         for ( keyIndex = 0, keyLength = keys.length; keyIndex < keyLength; ++ keyIndex){
-          this._actionMapping[keys[keyIndex]] = actions[actionIndex];
+          this._mapKey(this._actionMapping, keys[keyIndex], actions[actionIndex]);
         }
       }else{
-        this._actionMapping[keys] = actions[actionIndex];
+        this._mapKey(this._actionMapping, keys, actions[actionIndex]);
       }
     }
-
-
-    //Loop through all keys in the object. Take values of each key and assign
-    // them to new data structure under that name with the key as a value
   };
+
+  function _mapKey(keyMapping, keyName, toMap){
+    var currentStateMapping = keyMapping[keyName];
+    //if no states are mapped to this key yet then map the toMap to the key
+    if (undefined === currentStateMapping){
+      keyMapping[keyName] = toMap;
+    //otherwise if there is a toMap mapped then turn the mapping into an array
+    // including the already mapped toMap and the new toMap
+    }else if (typeof currentStateMapping === "string"){
+      keyMapping[keyName] = [currentStateMapping, toMap];
+    //otherwise we have multiple states mapped already, just add another one onto the array
+    }else{
+      keyMapping[keyName][currentStateMapping.length] = toMap;
+    }
+  }
+
   Controller.prototype = new Component();
   Controller.prototype.constructor = Controller;
 
@@ -64,11 +74,31 @@ define( function ( require ) {
   function onKeyDown( event ) {
     var key = event.data;
     if (undefined !== this._stateMapping[key]){
-      this.states[this._stateMapping[key]] = true;
-      this.owner.handleEvent(new Event(this._stateMapping[key], true));
+      if (Array.isArray(this._stateMapping[key])){
+        //TODO: Find out if we want to set all states at once and then fire each event or set a state then fire an event state by state
+        var i, l;
+        for (i = 0, l = this._stateMapping[key].length; i < l; ++ i){
+          this.states[this._stateMapping[key][i]] = true;
+        }
+        if (this.owner){
+          for (i = 0, l = this._stateMapping[key].length; i < l; ++ i){
+            this.owner.handleEvent(new Event(this._stateMapping[key][i], true));
+          }
+        }
+      }else{
+        this.states[this._stateMapping[key]] = true;
+        if (this.owner){
+          this.owner.handleEvent(new Event(this._stateMapping[key], true));
+        }
+      }
     }
     if (undefined !== this._actionMapping[key]){
-      if (this.owner){
+      if (Array.isArray(this._actionMapping[key])){
+        for (var i = 0, l = this._actionMapping[key].length; i < l; ++ i){
+          this.owner.handleEvent(new Event(this._actionMapping[key][i]));
+        }
+      }
+      else if (this.owner){
         this.owner.handleEvent(new Event(this._actionMapping[key]));
       }
     }
@@ -77,8 +107,22 @@ define( function ( require ) {
   function onKeyUp ( event ) {
     var key = event.data;
     if (undefined !== this._stateMapping[key]){
-      this.states[this._stateMapping[key]] = false;
-      this.owner.handleEvent(new Event(this._stateMapping[key], false));
+      if (Array.isArray(this._stateMapping[key])){
+        var i, l;
+        for (i = 0, l = this._stateMapping[key].length; i < l; ++ i){
+          this.states[this._stateMapping[key][i]] = false;
+        }
+        if (this.owner){
+          for (i = 0, l = this._stateMapping[key].length; i < l; ++ i){
+            this.owner.handleEvent(new Event(this._stateMapping[key][i], false));
+          }
+        }
+      }else{
+        this.states[this._stateMapping[key]] = false;
+        if (this.owner){
+          this.owner.handleEvent(new Event(this._stateMapping[key], false));
+        }
+      }
     }
   }
 
@@ -114,6 +158,7 @@ define( function ( require ) {
   }
 
   var prototype = {
+    _mapKey: _mapKey,
     onKeyDown: onKeyDown,
     onKeyUp: onKeyUp,
     onUpdate: onUpdate,
