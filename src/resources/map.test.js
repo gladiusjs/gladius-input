@@ -112,13 +112,13 @@ define(
         deepEqual(newMap.Actions, expected.Actions, "map return has correct action dict");
       });
       
-      test( "constructing a map with non-string property values throws", 
+      test( "constructing a map with non-string/non-array property values throws", 
         function () {
           expect(1);
           
           var mapArg = {
             "Actions": {
-              "First": []
+              "First": {}
             }
           };
           
@@ -127,7 +127,7 @@ define(
           }, function(err) {
             return err instanceof Error &&
               err.message == "map initializer contained non-string value";
-          },"exception raised by map creation with non-string prop val");
+          }, "exception raised by map creation with non-string prop val");
         }); 
     };
   }

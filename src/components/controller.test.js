@@ -3,7 +3,7 @@ define(
     "src/resources/map",
     "core/event"
      ],
-  function( Controller, Map, event ) {
+  function( Controller, Map, Event ) {
     return function() {
 
       module( "Controller", {
@@ -81,7 +81,7 @@ define(
         entityMock.expects("handleEvent").once();
         
         ok( "onKeyDown" in controller, "has key event handler" );
-        controller.onKeyDown( new event( "KeyDown", "SPACE" ));
+        controller.onKeyDown( new Event( "KeyDown", "SPACE" ));
        
         // ensure expectations
         ok( entityMock.verify(), "entity method invocations are correct" );
@@ -131,8 +131,8 @@ define(
           "controller WalkForward state is initially false" );
 
         // call controller.onKey()
-        controller.onKeyDown( new event( "KeyDown", "W" ) );
-        controller.onKeyUp( new event( "KeyUp", "W" ) );
+        controller.onKeyDown( new Event( "KeyDown", "W" ) );
+        controller.onKeyUp( new Event( "KeyUp", "W" ) );
        
         // ensure expectations
         equal( eventCounter, 2, "handleEvent invoked twice" );
