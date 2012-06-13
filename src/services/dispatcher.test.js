@@ -175,7 +175,23 @@ define(
 
       module( "Dispatcher", {
         setup: function() {
-          this.testCanvas = document.getElementById("test-canvas");            
+          this.testCanvas = document.getElementById("test-canvas"); 
+          this.elementAPI = {
+            handlerList: {},
+            addEventListener: function( type, handler, preventDefault ) {
+              this.handlerList[type] = handler;
+            },
+            dispatchEvent: function( e ) {
+              this.handlerList[e.type](e);        
+            }
+          };
+
+          this.controllerAPI = {
+            type: "Controller",
+            onKeyDown: function() {},
+            onKeyUp: function() {},
+            onUpdate: function() {}
+          };
         },
         teardown: function() {}
       });
@@ -206,8 +222,8 @@ define(
           "default element is document when element option is missing" );
       });
 
-      asyncTest( "keyboard events are buffered by dispatcher", function() {
-        expect( 0 );
+      test( "keyboard events are buffered by dispatcher", function() {
+        expect( 6 + 2*keyCodes.length );
 
         function makeMockKeyEvent( type, which, keyCode ) {
           return {'type': type, 'which': which, 'keyCode': keyCode};
@@ -222,32 +238,45 @@ define(
           var name = pair[0];
           var code = pair[1];
 
-          keyboardEvents.push(makeMockKeyEvent(code, null));
+          keyboardEvents.push(makeMockKeyEvent("keydown", code, null));
           expectedNames.push(name);
-          keyboardEvents.push(makeMockKeyEvent(null, code));
+          keyboardEvents.push(makeMockKeyEvent("keyup", null, code));
           expectedNames.push(name);
         }
 
-        var fakeElement = {
-          handlerList: {},
-           
-          addEventListener: function( type, handler, preventDefault ) {
-             this.handlerList[type] = handler;
-          },
+        var mockElement = sinon.mock( this.elementAPI );   
+        mockElement.expects( "addEventListener" ).twice();
+        var mockController = sinon.mock( this.controllerAPI );
 
-          dispatchEvent: function( e ) {
-             this.handlerList[e.type](e);        
-          }
-            
-        };
+        var dispatcher = new Dispatcher( null, {element: elementAPI} );
+        dispatcher.registerComponent( 
+          "0", // id
+          controllerAPI );
+        ok( dispatcher.hasOwnProperty( "queue" ), 
+          "dispatcher has a queue property" );
+        equal( dispatcher.queue.length, 0, "initial queue length is 0" );
         
-        for ( i = 0; i < keyboardEvents.length; ++ i) {
-          
+        // for each event, dispatch it and verify that it is buffered
+        for( i = 0; i < keyboardEvents.length; ++ i ) {
+          var event = keyboardEvents[i];
+          elementAPI.dispatchEvent( event );
         }
-        
-        // 2. for each event, dispatch it and verify that it is buffered
-        // 3. verify that KeyDown and KeyUp events are dispatched to a mock controller
-        
+
+        equal( dispatcher.queue.length, keyboardEvents.length, 
+          "queue length is correct" );
+        for( i = 0; i < keyboardEvents.length; ++ i ) {
+          deepEqual( dispatcher.queue[i], keyboardEvents[i], 
+            "queued event found in dispatched events list" );
+        }
+
+        mockController.expects( "onKeyDown" ).exactly( keyCodes.length );
+        mockController.expects( "onKeyUp" ).exactly( keyCodes.length );
+        mockController.expects( "onUpdate" ).once();
+
+        // verify that KeyDown and KeyUp events are dispatched to a mock controller
+        dispatcher.dispatch();
+        ok( mockElement.verify(), "element mock expectations verified" );
+        ok( mockController.verify(), "controller mock expectations verified" );
       });
       
     };
