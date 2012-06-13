@@ -3,7 +3,7 @@ define(
     "src/resources/map",
     "core/event"
      ],
-  function( Controller, Map, Event ) {
+  function( Controller, Map, event ) {
     return function() {
 
       module( "Controller", {
@@ -13,7 +13,7 @@ define(
       });
 
       test( "construct a controller, no map", function() {
-        expect( 2 );
+        expect( 3 );
 
         var controller = new Controller();
         ok( controller instanceof Controller, "type is correct" );
@@ -25,12 +25,13 @@ define(
           }
         };
 
-        deepEqual( controller.map, expected, "controller map is correct" );
+        deepEqual( controller.map.States, expected.States, "controller map states are correct" );
+        deepEqual( controller.map.Actions, expected.Actions, "controller map actions are correct" );
       });
 
 
       test( "construct a controller with a map", function() {
-        expect( 2 );
+        expect( 3 );
         var map = new Map(
           {
             "Actions": {
@@ -46,7 +47,8 @@ define(
         var controller = new Controller( map );
 
         ok( controller instanceof Controller, "type is correct" );
-        deepEqual( controller.map, map, "controller map is correct" );
+        deepEqual( controller.map.States, map.States, "controller map states are correct" );
+        deepEqual( controller.map.Actions, map.Actions, "controller map actions are correct" );
       });
 
 
@@ -73,13 +75,13 @@ define(
         var entityMock = sinon.mock(myEntityAPI);
 
         // tell controller where to dispatch events
-        controller.setOwner(entityMock);
+        controller.setOwner(myEntityAPI);
         
         // set up mock to expect handleEvent called with dispatched event
         entityMock.expects("handleEvent").once();
         
-        ok( controller.hasOwnProperty( "onKeyDown" ), "has key event handler" );
-        controller.onKeyDown( new Event( "KeyDown", "SPACE" ) );
+        ok( "onKeyDown" in controller, "has key event handler" );
+        controller.onKeyDown( new event( "KeyDown", "SPACE" ));
        
         // ensure expectations
         ok( entityMock.verify(), "entity method invocations are correct" );
@@ -96,15 +98,15 @@ define(
           }
         );
         var controller = new Controller( map );
-        ok( controller.hasOwnProperty( "onKeyDown" ), 
+        ok( "onKeyDown" in controller,
           "controller has KeyDown event handler" );
-        ok( controller.hasOwnProperty( "onKeyUp" ), 
+        ok( "onKeyUp" in controller,
           "controller has KeyUp event handler" );
 
         var eventCounter = 0;
 
         // create fake entity API object
-        var myEntityAPI = { 
+        var fakeEntity = {
           handleEvent: function ( event ) {
             ++ eventCounter;
             equal( event.type, "WalkForward", "event type is correct" );
@@ -122,13 +124,15 @@ define(
             }
           }
         };
+
+        controller.setOwner(fakeEntity);
                
         equal( controller.states["WalkForward"], false, 
           "controller WalkForward state is initially false" );
 
         // call controller.onKey()
-        controller.onKeyDown( new Event( "KeyDown", "W" ) );
-        controller.onKeyUp( new Event( "KeyUp", "W" ) );
+        controller.onKeyDown( new event( "KeyDown", "W" ) );
+        controller.onKeyUp( new event( "KeyUp", "W" ) );
        
         // ensure expectations
         equal( eventCounter, 2, "handleEvent invoked twice" );

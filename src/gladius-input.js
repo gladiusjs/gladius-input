@@ -23,7 +23,7 @@ define( function ( require ) {
       },
       
       resources: {
-        InputMap: require( "src/resources/input-map" )
+        InputMap: require( "src/resources/map" )
       }
       
   });
