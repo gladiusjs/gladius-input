@@ -1,6 +1,5 @@
 define(
-  [ "src/services/dispatcher",
-    "src/common/create-keyboard-event" ],
+  [ "src/services/dispatcher" ],
   function( Dispatcher, createKeyboardEvent ) {
     return function() {
 
