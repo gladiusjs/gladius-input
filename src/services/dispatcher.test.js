@@ -252,9 +252,9 @@ define(
         dispatcher.registerComponent( 
           "0", // id
           this.controllerAPI );
-        ok( dispatcher.hasOwnProperty( "queue" ), 
-          "dispatcher has a queue property" );
-        equal( dispatcher.queue.length, 0, "initial queue length is 0" );
+        ok( dispatcher.hasOwnProperty( "_queue" ), 
+          "dispatcher has a _queue property" );
+        equal( dispatcher._queue.length, 0, "initial queue length is 0" );
         
         // for each event, dispatch it and verify that it is buffered
         for( i = 0; i < keyboardEvents.length; ++ i ) {
@@ -262,10 +262,10 @@ define(
           this.elementAPI.dispatchEvent( event );
         }
 
-        equal( dispatcher.queue.length, keyboardEvents.length, 
+        equal( dispatcher._queue.length, keyboardEvents.length, 
           "queue length is correct" );
         for( i = 0; i < keyboardEvents.length; ++ i ) {
-          deepEqual( dispatcher.queue[i], keyboardEvents[i], 
+          deepEqual( dispatcher._queue[i], keyboardEvents[i], 
             "queued event found in dispatched events list" );
         }
 
@@ -273,12 +273,16 @@ define(
         mockController.expects( "onKeyUp" ).exactly( keyCodes.length );
         mockController.expects( "onUpdate" ).once();
 
-        // verify that KeyDown and KeyUp events are dispatched to a mock controller
+        // verify that listeners were added and KeyDown/KeyUp events are 
+        // dispatched to a mock controller
         dispatcher.dispatch();
-        equal( this.eventListenerCount, 2, "addEventListener called twice" );
+        equal( this.elementAPI.eventListenerCount, 2, "addEventListener called twice" );
         ok( mockController.verify(), "controller mock expectations verified" );
       });
+
+      // TD write test that correct data is received using expectedNames array
       
+      // TD test dispatchers with more than one controller
     };
   }
 );
