@@ -111,7 +111,7 @@ define(
         deepEqual(newMap.States, expected.States, "map return has correct state dict");
         deepEqual(newMap.Actions, expected.Actions, "map return has correct action dict");
       });
-      
+      //TODO: Expand this test so it hits all of the validation fail states in map
       test( "constructing a map with non-string/non-array property values throws", 
         function () {
           expect(2);

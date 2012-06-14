@@ -49,18 +49,20 @@ define( function ( require ) {
     }
   };
 
+  //toMap is either a state or an action, depending on if this method was given
+  // this._actionMapping or this._stateMapping
   function _mapKey(keyMapping, keyName, toMap){
-    var currentStateMapping = keyMapping[keyName];
+    var currentMapping = keyMapping[keyName];
     //if no states are mapped to this key yet then map the toMap to the key
-    if (undefined === currentStateMapping){
+    if (undefined === currentMapping){
       keyMapping[keyName] = toMap;
     //otherwise if there is a toMap mapped then turn the mapping into an array
     // including the already mapped toMap and the new toMap
-    }else if (typeof currentStateMapping === "string"){
-      keyMapping[keyName] = [currentStateMapping, toMap];
+    }else if (typeof currentMapping === "string"){
+      keyMapping[keyName] = [currentMapping, toMap];
     //otherwise we have multiple states mapped already, just add another one onto the array
     }else{
-      keyMapping[keyName][currentStateMapping.length] = toMap;
+      keyMapping[keyName][currentMapping.length] = toMap;
     }
   }
 
@@ -75,7 +77,6 @@ define( function ( require ) {
     var key = event.data;
     if (undefined !== this._stateMapping[key]){
       if (Array.isArray(this._stateMapping[key])){
-        //TODO: Find out if we want to set all states at once and then fire each event or set a state then fire an event state by state
         var i, l;
         for (i = 0, l = this._stateMapping[key].length; i < l; ++ i){
           this.states[this._stateMapping[key][i]] = true;

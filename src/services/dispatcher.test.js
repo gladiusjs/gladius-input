@@ -202,7 +202,7 @@ define(
         var mockScheduler = sinon.mock(schedulerAPI);
         mockScheduler.expects( "insert" ).once();
         
-        var dispatcher = new Dispatcher(mockScheduler, 
+        var dispatcher = new Dispatcher(schedulerAPI,
           {element: this.testCanvas});
         ok(dispatcher instanceof Dispatcher, "dispatcher is the right instance");
         ok( mockScheduler.verify(), "service tasks are scheduled" );

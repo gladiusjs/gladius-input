@@ -183,6 +183,8 @@ define(
         equal( eventCounter, 2, "handleEvent invoked twice" );
       });
 
+      //TODO: Find out if we want to set all states at once and then fire each
+      // event or set a state then fire an event state by state
       test( "key event triggers multiple mapped game states, based on map", function() {
         expect( 18 );
 

@@ -24,7 +24,7 @@ define( function ( require ) {
           if ( !Array.isArray(submap[submapKeys[submapIndex]])) {
             throw new Error("map contains " + submapName + " " + submapKeys[submapIndex] +
               " that is not a string or array");
-          }else{
+          } else {
             var i, l;
             var submapArray = submap[submapKeys[submapIndex]];
             if (submapArray.length === 0){
