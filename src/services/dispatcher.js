@@ -27,13 +27,15 @@ define( function ( require ) {
 
     this.queue = [];
         
-    this.element.addEventListener("keydown", "dispatcherKeyDown", false);
-    this.element.addEventListener("keyup", "dispatcherKeyUp", false);
+    this.element.addEventListener("keydown", dispatcherKeyDown, false);
+    this.element.addEventListener("keyup", dispatcherKeyUp, false);
 
   };
 
-  function dispatcherKeyDown() {}
-  function dispatcherKeyUp() {}
+  function dispatcherKeyDown(event) {
+    //event.keyCode
+  }
+  function dispatcherKeyUp(event) {}
   
   function dispatch(){
   

@@ -178,7 +178,9 @@ define(
           this.testCanvas = document.getElementById("test-canvas"); 
           this.elementAPI = {
             handlerList: {},
+            eventListenerCount: 0,
             addEventListener: function( type, handler, preventDefault ) {
+              this.eventListenerCount++;
               this.handlerList[type] = handler;
             },
             dispatchEvent: function( e ) {
@@ -244,8 +246,6 @@ define(
           expectedNames.push(name);
         }
 
-        var mockElement = sinon.mock( this.elementAPI );   
-        mockElement.expects( "addEventListener" ).twice();
         var mockController = sinon.mock( this.controllerAPI );
 
         var dispatcher = new Dispatcher( null, {element: this.elementAPI} );
@@ -275,7 +275,7 @@ define(
 
         // verify that KeyDown and KeyUp events are dispatched to a mock controller
         dispatcher.dispatch();
-        ok( mockElement.verify(), "element mock expectations verified" );
+        equal( this.eventListenerCount, 2, "addEventListener called twice" );
         ok( mockController.verify(), "controller mock expectations verified" );
       });
       
