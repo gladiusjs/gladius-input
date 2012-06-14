@@ -248,10 +248,10 @@ define(
         mockElement.expects( "addEventListener" ).twice();
         var mockController = sinon.mock( this.controllerAPI );
 
-        var dispatcher = new Dispatcher( null, {element: elementAPI} );
+        var dispatcher = new Dispatcher( null, {element: this.elementAPI} );
         dispatcher.registerComponent( 
           "0", // id
-          controllerAPI );
+          this.controllerAPI );
         ok( dispatcher.hasOwnProperty( "queue" ), 
           "dispatcher has a queue property" );
         equal( dispatcher.queue.length, 0, "initial queue length is 0" );
@@ -259,7 +259,7 @@ define(
         // for each event, dispatch it and verify that it is buffered
         for( i = 0; i < keyboardEvents.length; ++ i ) {
           var event = keyboardEvents[i];
-          elementAPI.dispatchEvent( event );
+          this.elementAPI.dispatchEvent( event );
         }
 
         equal( dispatcher.queue.length, keyboardEvents.length, 

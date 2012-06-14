@@ -18,16 +18,30 @@ define( function ( require ) {
       }
     };
     Service.call( this, scheduler, schedules );
+    
+    if ( 'element' in options ) {
+      this.element = options.element;
+    } else {
+      this.element = document;
+    }
+
+    this.queue = [];
+        
+    this.element.addEventListener("keydown", "dispatcherKeyDown", false);
+    this.element.addEventListener("keyup", "dispatcherKeyUp", false);
+
   };
 
+  function dispatcherKeyDown() {}
+  function dispatcherKeyUp() {}
+  
   function dispatch(){
-
+  
   }
 
   Dispatcher.prototype = new Service();
   Dispatcher.prototype.constructor = Dispatcher;
   Dispatcher.prototype.dispatch = dispatch;
-
   return Dispatcher;
 
 });
