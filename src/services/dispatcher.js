@@ -17,7 +17,7 @@ define( function ( require ) {
       }
     };
     Service.call( this, scheduler, schedules );
-    
+
     if ( 'element' in options ) {
       this.element = options.element;
     } else {
@@ -30,28 +30,34 @@ define( function ( require ) {
     function dispatcherKeyHandler(event) {
       self._queue.push(event);
     }
-        
+
     this.element.addEventListener("keydown", dispatcherKeyHandler, false);
     this.element.addEventListener("keyup", dispatcherKeyHandler, false);
 
   };
-  
+
   function dispatch(){
-    
-    return;
+
+    //return;
     // XXX for each DOM event in the array
-    this._queue.forEach( function ( domEvent ) {
+    this._queue.forEach( (function ( domEvent ) {
 
       // XXX create Event from DOM event
-      //var gladiusEvent =
-       
+      if (domEvent.type === "keydown"){
+        var gladiusEvent = new Event(domEvent.type, domEvent.which);
+      }else if (domEvent.type === "keyup"){
+        var gladiusEvent = new Event(domEvent.type, domEvent.keyCode);
+      }
+
       // dispatch each event to every controller we have that will handle it
       var controllers = this._registeredComponents["Controller"];
       var controllerIds = Object.keys( controllers );
       controllerIds.forEach( function ( id ) {
         controllers[id].handleEvent(gladiusEvent);
       });
-    });
+
+
+    }).bind(this));
   }
 
   Dispatcher.prototype = new Service();

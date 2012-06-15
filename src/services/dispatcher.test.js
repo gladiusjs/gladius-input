@@ -18,7 +18,7 @@ define(
         ['JUNJA', 0x17],
         ['FINAL', 0x18],
         ['HANJA', 0x19],
-        ['KANJI', 0x19],
+        ['KANJI', 0x19],//TODO: Find out if this is a bug or not. Has same number as preceding keyCode
         ['ESCAPE', 0x1B],
         ['CONVERT', 0x1C],
         ['NONCONVERT', 0x1D],
