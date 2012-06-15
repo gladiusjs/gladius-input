@@ -221,7 +221,7 @@ define(
       });
 
       test( "keyboard events are buffered by dispatcher", function() {
-        expect( 5 + 2*keyCodes.length );
+        expect( 6 + 2*keyCodes.length );
 
         function makeMockKeyEvent( type, which, keyCode ) {
           return {'type': type, 'which': which, 'keyCode': keyCode};
@@ -273,6 +273,7 @@ define(
         // dispatched to a mock controller
         dispatcher.dispatch();
         equal( this.elementAPI.eventListenerCount, 2, "addEventListener called twice" );
+        equal( dispatcher._queue.length, 0, "queue is empty after dispatch" );
         ok( mockController.verify(), "controller mock expectations verified" );
       });
 

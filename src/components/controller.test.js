@@ -44,7 +44,7 @@ define(
             }
           }
         );
-        var controller = new Controller( map );
+        var controller = new Controller( null, map );
 
         ok( controller instanceof Controller, "type is correct" );
         deepEqual( controller.map.States, map.States, "controller map states are correct" );
@@ -62,7 +62,7 @@ define(
             }
           }
         );
-        var controller = new Controller( map );
+        var controller = new Controller( null, map );
         
         // create fake entity API object
         var myEntityAPI = { 
@@ -98,7 +98,7 @@ define(
             }
           }
         );
-        var controller = new Controller( map );
+        var controller = new Controller( null, map );
 
         var fireCounter = 0;
         var flyCounter = 0;
@@ -142,7 +142,7 @@ define(
             }
           }
         );
-        var controller = new Controller( map );
+        var controller = new Controller( null, map );
         ok( "onKeyDown" in controller,
           "controller has KeyDown event handler" );
         ok( "onKeyUp" in controller,
@@ -196,7 +196,7 @@ define(
             }
           }
         );
-        var controller = new Controller( map );
+        var controller = new Controller( null, map );
         ok( "onKeyDown" in controller,
           "controller has KeyDown event handler" );
         ok( "onKeyUp" in controller,

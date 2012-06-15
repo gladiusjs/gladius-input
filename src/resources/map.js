@@ -5,6 +5,9 @@ if ( typeof define !== "function" ) {
 define( function ( require ) {
   var Map = function( map ) {
     map = map || {};
+    if (typeof map === "string"){
+      map = JSON.parse( map );
+    }
     this.States = (undefined !== map.States ) ? map.States : {};
     this.Actions = (undefined !== map.Actions ) ? map.Actions : {};
     this._validate();

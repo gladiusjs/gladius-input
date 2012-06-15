@@ -44,9 +44,10 @@ define( function ( require ) {
     var controllers = this._registeredComponents["Controller"];
     var controllerIds = Object.keys( controllers );
     var currentId, domEvent, keyCodeString, domCode, gladiusEvent;
-    for (eventNumber in this._queue){
+    var i, l;
+    for (i = 0, l = this._queue.length; i < l; ++ i){
       // get the event code from the DOM
-      domEvent = this._queue[eventNumber];
+      domEvent = this._queue[i];
       domCode = domEvent.which ? domEvent.which : domEvent.keyCode;
 
       // translate it into keyCode string
@@ -64,9 +65,10 @@ define( function ( require ) {
       // dispatch each event to every controller we have that will handle it
 
       for (currentId in controllerIds){
-        gladiusEvent.dispatch(controllers[currentId]);
+        gladiusEvent.dispatch(controllers[controllerIds[currentId]]);
       }
     }
+    this._queue = [];
 
     var component, entityId;
     var registeredComponents = this._registeredComponents;

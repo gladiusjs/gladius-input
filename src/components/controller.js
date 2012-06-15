@@ -8,8 +8,8 @@ define( function ( require ) {
   var Map = require("src/resources/map");
   var Event = require( "core/event" );
 
-  var Controller = function(map){
-    Component.call( this, "Controller", {}, [""] );
+  var Controller = function(service, map){
+    Component.call( this, "Controller", service, [] );
     var that = this;
     var stateIndex, stateLength, keyIndex, keyLength;
     var actionIndex, actionLength;
