@@ -49,6 +49,9 @@ define( function ( require ) {
     }
   };
 
+  Controller.prototype = new Component();
+  Controller.prototype.constructor = Controller;
+
   //toMap is either a state or an action, depending on if this method was given
   // this._actionMapping or this._stateMapping
   function _mapKey(keyMapping, keyName, toMap){
@@ -65,9 +68,6 @@ define( function ( require ) {
       keyMapping[keyName][currentMapping.length] = toMap;
     }
   }
-
-  Controller.prototype = new Component();
-  Controller.prototype.constructor = Controller;
 
   function onUpdate( event ) {
 

@@ -6,7 +6,7 @@ define( function ( require ) {
 
   var Service = require( "base/service" );
   var Event = require( "core/event" );
-  var KeyMapper = require( "services/DOMKeyMapper.js" );
+  var DOMKeyMapper = require( "src/services/DOMKeyMapper" );
   
   var Dispatcher = function( scheduler, options ) {
     options = options || {};
@@ -25,6 +25,8 @@ define( function ( require ) {
       this.element = document;
     }
 
+    this.DOMKeyMapper = new DOMKeyMapper();
+
     this._queue = [];
 
     var self = this;
@@ -39,27 +41,44 @@ define( function ( require ) {
 
   function dispatch(){
 
-    //return;
-    // XXX for each DOM event in the array
-    this._queue.forEach( (function ( domEvent ) {
-
-      // get the event code from the DOM      
-      var DOMCode = domEvent.which ? domEvent.which : domEvent.keyCode;
+    var controllers = this._registeredComponents["Controller"];
+    var controllerIds = Object.keys( controllers );
+    var currentId, domEvent, keyCodeString, domCode, gladiusEvent;
+    for (eventNumber in this._queue){
+      // get the event code from the DOM
+      domEvent = this._queue[eventNumber];
+      domCode = domEvent.which ? domEvent.which : domEvent.keyCode;
 
       // translate it into keyCode string
-      var keyCodeString = DOMKeyMapper.mapDOMCode(DOMCode);
-      
+      keyCodeString = this.DOMKeyMapper.getKeyName(domCode);
+
       // create Event from DOM event
-      var gladiusEvent = new Event(domEvent.type, DOMCode);
+      if (domEvent.type === "keydown"){
+        gladiusEvent = new Event("KeyDown", keyCodeString);
+      }else if (domEvent.type === "keyup"){
+        gladiusEvent = new Event("KeyUp", keyCodeString);
+      }else{
+        throw new Error("A DOM event type was encountered which was not keydown or keyup in dispatcher");
+      }
 
       // dispatch each event to every controller we have that will handle it
-      var controllers = this._registeredComponents["Controller"];
-      var controllerIds = Object.keys( controllers );
-      controllerIds.forEach( function ( id ) {
-        controllers[id].handleEvent(gladiusEvent);
-      });
 
-    }).bind(this));
+      for (currentId in controllerIds){
+        gladiusEvent.dispatch(controllers[currentId]);
+      }
+    }
+
+    var component, entityId;
+    var registeredComponents = this._registeredComponents;
+
+    var updateEvent = new Event( 'Update', undefined, false);
+    for( var componentType in registeredComponents ) {
+      for( entityId in registeredComponents[componentType] ) {
+        component = registeredComponents[componentType][entityId];
+        while( component.handleQueuedEvent() ) {}
+        updateEvent.dispatch( component );
+      }
+    }
   }
 
   Dispatcher.prototype = new Service();

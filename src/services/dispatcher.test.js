@@ -1,6 +1,7 @@
 define(
-  [ "src/services/dispatcher" ],
-  function( Dispatcher, createKeyboardEvent ) {
+  [ "src/services/dispatcher",
+    "src/components/controller"],
+  function( Dispatcher, Controller, createKeyboardEvent ) {
     return function() {
 
       var keyCodes = [
@@ -188,12 +189,7 @@ define(
             }
           };
 
-          this.controllerAPI = {
-            type: "Controller",
-            onKeyDown: function() {},
-            onKeyUp: function() {},
-            onUpdate: function() {}
-          };
+          this.controllerAPI = new Controller();
         },
         teardown: function() {}
       });
@@ -225,7 +221,7 @@ define(
       });
 
       test( "keyboard events are buffered by dispatcher", function() {
-        expect( 6 + 2*keyCodes.length );
+        expect( 5 + 2*keyCodes.length );
 
         function makeMockKeyEvent( type, which, keyCode ) {
           return {'type': type, 'which': which, 'keyCode': keyCode};
@@ -279,6 +275,8 @@ define(
         equal( this.elementAPI.eventListenerCount, 2, "addEventListener called twice" );
         ok( mockController.verify(), "controller mock expectations verified" );
       });
+
+      // TD write
 
       // TD write test that correct data is received using expectedNames array
       
