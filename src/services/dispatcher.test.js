@@ -283,6 +283,8 @@ define(
       // TD write test that correct data is received using expectedNames array
       
       // TD test dispatchers with more than one controller
+      
+      // TD test if dispatcher has no controller
     };
   }
 );

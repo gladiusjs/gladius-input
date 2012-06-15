@@ -6,7 +6,8 @@ define( function ( require ) {
 
   var Service = require( "base/service" );
   var Event = require( "core/event" );
-
+  var KeyMapper = require( "services/DOMKeyMapper.js" );
+  
   var Dispatcher = function( scheduler, options ) {
     options = options || {};
 
@@ -42,12 +43,14 @@ define( function ( require ) {
     // XXX for each DOM event in the array
     this._queue.forEach( (function ( domEvent ) {
 
-      // XXX create Event from DOM event
-      if (domEvent.type === "keydown"){
-        var gladiusEvent = new Event(domEvent.type, domEvent.which);
-      }else if (domEvent.type === "keyup"){
-        var gladiusEvent = new Event(domEvent.type, domEvent.keyCode);
-      }
+      // get the event code from the DOM      
+      var DOMCode = domEvent.which ? domEvent.which : domEvent.keyCode;
+
+      // translate it into keyCode string
+      var keyCodeString = DOMKeyMapper.mapDOMCode(DOMCode);
+      
+      // create Event from DOM event
+      var gladiusEvent = new Event(domEvent.type, DOMCode);
 
       // dispatch each event to every controller we have that will handle it
       var controllers = this._registeredComponents["Controller"];
@@ -55,7 +58,6 @@ define( function ( require ) {
       controllerIds.forEach( function ( id ) {
         controllers[id].handleEvent(gladiusEvent);
       });
-
 
     }).bind(this));
   }
