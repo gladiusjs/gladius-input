@@ -43,8 +43,8 @@ define( function ( require ) {
 
     var controllers = this._registeredComponents["Controller"];
     var controllerIds = Object.keys( controllers );
-    var currentId, domEvent, keyCodeString, domCode, gladiusEvent;
-    var i, l;
+    var domEvent, keyCodeString, domCode, gladiusEvent;
+    var i, l, controllerIndex, controllerLimit;
     for (i = 0, l = this._queue.length; i < l; ++ i){
       // get the event code from the DOM
       domEvent = this._queue[i];
@@ -64,8 +64,10 @@ define( function ( require ) {
 
       // dispatch each event to every controller we have that will handle it
 
-      for (currentId in controllerIds){
-        gladiusEvent.dispatch(controllers[controllerIds[currentId]]);
+      for (controllerIndex = 0, controllerLimit = controllerIds.length;
+           controllerIndex < controllerLimit;
+           ++ controllerIndex){
+        gladiusEvent.dispatch(controllers[controllerIds[controllerIndex]]);
       }
     }
     this._queue = [];
