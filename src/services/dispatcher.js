@@ -7,7 +7,7 @@ define( function ( require ) {
   var Service = require( "base/service" );
   var Event = require( "core/event" );
   var DOMKeyMapper = require( "src/services/DOMKeyMapper" );
-  
+
   var Dispatcher = function( scheduler, options ) {
     options = options || {};
 
@@ -42,6 +42,9 @@ define( function ( require ) {
   function dispatch(){
 
     var controllers = this._registeredComponents["Controller"];
+    if (!controllers){
+      controllers = [];
+    }
     var controllerIds = Object.keys( controllers );
     var domEvent, keyCodeString, domCode, gladiusEvent;
     var i, l, controllerIndex, controllerLimit;
